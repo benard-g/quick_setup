@@ -99,7 +99,45 @@ function install_fish() {
     && sudo apt-add-repository -y "ppa:fish-shell/release-$FISH_VERSION" \
     && install fish \
     && curl -sL https://get.oh-my.fish | env NONINTERACTIVE=1 fish \
-    && fish -c "omf install robbyrussell"
+    && fish -c "omf install robbyrussell" \
+    && echo -n "# PATH
+set -x PATH \\
+    \$HOME/.npm-packages/bin \\
+    \$HOME/.local/bin \\
+    \$HOME/.cargo/bin \\
+    \$PATH
+set -x MANPATH \$HOME/.npm-packages/share/man \$MANPATH
+" > "$HOME/.config/fish/config.fish" \
+    && echo "
+function setAlias
+    alias \$argv[1] \$argv[2]
+    funcsave \$argv[1]
+end
+funcsave setAlias
+
+function update
+    sudo apt update && sudo apt upgrade && sudo apt autoremove
+end
+funcsave update
+
+setAlias ls exa
+setAlias ll 'ls -l'
+setAlias la 'ls -la'
+setAlias lls 'clear; ls'
+setAlias lll 'clear; ll'
+setAlias lla 'clear; la'
+setAlias tree 'exa --tree'
+
+setAlias .. 'cd ..'
+setAlias ... 'cd ../..'
+setAlias .... 'cd ../../..'
+setAlias ..... 'cd ../../../..'
+setAlias ...... 'cd ../../../../..'
+setAlias ....... 'cd ../../../../../..'
+setAlias ........ 'cd ../../../../../../..'
+
+setAlias fishrc 'vim ~/.config/fish/config.fish'
+" | fish
 }
 
 function install_exa() {
@@ -112,23 +150,7 @@ function install_exa() {
 function post_install() {
     echo "===== POST INSTALL ====="
     true \
-    && APT autoremove -y \
-    && chsh -s /usr/bin/fish
+    && APT autoremove -y
 }
 
 main
-
-
-
-function fiiiiiisssshhhhh() {
-    # NODE
-    set NPM_PACKAGES "$HOME/.npm-packages"
-    set -x PATH $NPM_PACKAGES/bin $PATH
-    set -x MANPATH $NPM_PACKAGES/share/man $MANPATH
-
-    # PYTHON
-    set -x PATH $HOME/.local/bin .cargo/bin $PATH
-
-    # Rust
-    set -x PATH $HOME/.cargo/bin $PATH
-}
