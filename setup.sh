@@ -3,15 +3,11 @@
 #
 # CONFIG
 #
-echo "Configuration"
-
 NODE_VERSION=12
 PYTHON3_VERSION=8
 FISH_VERSION=3
 GCC_VERSION=8
 
-read -p "Git Username: " GIT_USERNAME
-read -p "Git Email: " GIT_EMAIL
 GIT_EDITOR="vim"
 
 
