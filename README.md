@@ -134,6 +134,12 @@ function update
 end
 funcsave update
 
+function tmp
+  set tmp_dir "/tmp/tmp-"(date +"%s")"-"(random 10000 99999)
+  mkdir $tmp_dir
+  cd $tmp_dir
+end
+
 setAlias ls exa
 setAlias ll 'ls -l'
 setAlias la 'ls -la'
