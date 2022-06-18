@@ -2,7 +2,7 @@
 
 This guide contains my personal installation steps to configure a new WSL environment.
 
-These commands are intended to be copied & pasted in a freshly created `Ubuntu-20` WSL.
+Most of these commands are intended to be copied & pasted in a freshly created `Ubuntu-22` WSL.
 
 > You are free to follow these steps but be aware that they are tightly related to my personal needs.
 
@@ -17,17 +17,10 @@ sudo apt update && sudo apt upgrade -y
 ### Install common softwares
 
 ```sh
-sudo apt install -y software-properties-common vim htop neofetch
+sudo apt install -y software-properties-common vim htop neofetch zip unzip
 ```
 
 ### Install `git`
-
-Consider exporting the following variables before running the shell commands (or replace them manually).
-```sh
-export GIT_NAME="My Name"
-export GIT_EMAIL="my-email@example.net"
-export SSH_NAME="my-host-name"
-```
 
 ```sh
 sudo apt install -y git
@@ -41,47 +34,23 @@ git config --global pager.branch false
 ssh-keygen -t rsa -b 4096 -f "$HOME/.ssh/id_rsa.pub" -N "" -C "$SSH_NAME"
 ```
 
-### Install `gcc` & `g++`
+### Install `zsh` shell
 
 ```sh
-sudo apt install -y gcc g++ make cmake gcc-10 g++-10
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
-sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
+sudo apt install -y zsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-### Install NodeJS through `nvm`
+### Install `NodeJS` through [fnm](https://github.com/Schniz/fnm)
 
 ```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
-. $HOME/.nvm/nvm.sh
-nvm install --lts
-npm install -g yarn
-```
-
-### Install `python`
-
-```sh
-sudo apt install -y python python3 python3-pip pipenv
-python3 -m pip install --user --upgrade pip
-python3 -m pip install --user --upgrade virtualenv
-```
-
-### Install the `fish` shell
-
-```sh
-sudo apt install -y fish
-curl -sL https://get.oh-my.fish | env NONINTERACTIVE=1 fish
-fish -c "omf install robbyrussell"
-fish -c "omf install nvm"
-# Set the fish shell as default (you will need to enter your password)
-chsh -s /usr/bin/fish
+curl -fsSL https://fnm.vercel.app/install | bash
 ```
 
 ### Install `exa` (an alternative to `ls`)
 
 ```sh
-sudo apt install -y cargo
-cargo install exa
+sudo apt install -y exa
 ```
 
 ### Cleanup
@@ -95,69 +64,59 @@ sudo apt autoremove
 
 ## Post cleanup steps
 
-At this step, you should be inside the `fish` shell, you can verify this by running the `ps` command.
+### ZSH customization
 
-### Fish customization
-
-Create a fish configuration at the following path `~/.config/fish/config.fish`.
-
-It should have the following content.
+Copy the following content inside your `~/.zshrc` file.
 
 ```sh
-# Move to WSL home directory on start-up
-switch $PWD
-  case '/mnt/c/Users/*'
-    cd $HOME
-end
+#
+# OH-MY-ZSH
+#
+export ZSH="$HOME/.oh-my-zsh"
 
-# PATH
-set -x PATH $HOME/.local/bin $PATH
-set -x PATH $HOME/.cargo/bin $PATH
+ZSH_THEME="robbyrussell"
 
-# Configure x-client
-set -x DISPLAY (grep 'nameserver' /etc/resolv.conf | sed 's/nameserver //'):0
-```
+plugins=(
+  git
+)
 
-> 💡 You should install the [VcXsrv](https://sourceforge.net/projects/vcxsrv) x-server for Windows.
+source $ZSH/oh-my-zsh.sh
 
-You can also add these useful aliases and functions.
+#
+# NODE-JS
+#
+export PATH=/home/beubeu/.fnm:$PATH
+eval "$(fnm env --use-on-cd)"
 
-```sh
-function setAlias
-  alias $argv[1] $argv[2]
-  funcsave $argv[1]
-end
-funcsave setAlias
+#
+# ALIASES
+#
+alias update="sudo apt update && sudo apt upgrade && sudo apt autoremove"
 
-function update
-  sudo apt update && sudo apt upgrade && sudo apt autoremove
-end
-funcsave update
+alias ls="exa"
+alias ll="ls -l"
+alias la="ls -la"
+alias lls="clear; ls"
+alias lll="clear; ll"
+alias lla="clear; la"
 
-function tmp
-  set tmp_dir "/tmp/tmp-"(date +"%s")"-"(random 10000 99999)
-  mkdir $tmp_dir
+alias tree="exa --tree"
+
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias .......="cd ../../../../../.."
+alias ........="cd ../../../../../../.."
+
+function tmp {
+  local tmp_dir="/tmp/tmp-"`date +"%s"`"-$(((RANDOM % 89999) + 10000))"
+  mkdir -p $tmp_dir
   cd $tmp_dir
-end
+}
 
-setAlias ls exa
-setAlias ll 'ls -l'
-setAlias la 'ls -la'
-setAlias lls 'clear; ls'
-setAlias lll 'clear; ll'
-setAlias lla 'clear; la'
-
-setAlias tree 'exa --tree'
-
-setAlias fishrc 'vim ~/.config/fish/config.fish'
-
-setAlias .. 'cd ..'
-setAlias ... 'cd ../..'
-setAlias .... 'cd ../../..'
-setAlias ..... 'cd ../../../..'
-setAlias ...... 'cd ../../../../..'
-setAlias ....... 'cd ../../../../../..'
-setAlias ........ 'cd ../../../../../../..'
+alias zshrc="vim ~/.zshrc; source ~/.zshrc"
 ```
 
 Close your terminal to conclude the installation.
