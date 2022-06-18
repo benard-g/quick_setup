@@ -72,6 +72,12 @@ mkdir -p ~/Projects
 
 ### ZSH customization
 
+Install some useful plugins
+```sh
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
 Copy the following content inside your `~/.zshrc` file.
 
 ```sh
@@ -83,7 +89,17 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
 plugins=(
+  docker
+  docker-compose
+  fnm
+  gcloud
   git
+  kubectl
+  node
+  npm
+  yarn
+  zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
