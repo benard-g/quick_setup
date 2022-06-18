@@ -31,7 +31,7 @@ git config --global core.editor vim
 git config --global pull.ff only
 git config --global pager.branch false
 
-ssh-keygen -t rsa -b 4096 -f "$HOME/.ssh/id_rsa.pub" -N "" -C "$SSH_NAME"
+ssh-keygen -t ed25519 -C "$SSH_NAME"
 ```
 
 ### Install `zsh` shell
