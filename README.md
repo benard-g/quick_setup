@@ -64,6 +64,12 @@ sudo apt autoremove
 
 ## Post cleanup steps
 
+### Main folders
+
+```sh
+mkdir -p ~/Projects
+```
+
 ### ZSH customization
 
 Copy the following content inside your `~/.zshrc` file.
@@ -109,6 +115,8 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 alias .......="cd ../../../../../.."
 alias ........="cd ../../../../../../.."
+
+alias pro="cd ~/Projects"
 
 function tmp {
   local tmp_dir="/tmp/tmp-"`date +"%s"`"-$(((RANDOM % 89999) + 10000))"
